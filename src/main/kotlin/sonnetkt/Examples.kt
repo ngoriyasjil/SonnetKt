@@ -4,10 +4,36 @@ import com.squareup.kotlinpoet.*
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 
 fun main() {
-    example10Sonnet()
+    example11Sonnet()
 }
 
-/*
+fun example11Sonnet() {
+    val helloWorld = EnumClass("Roshambo") {
+        primaryConstructor {
+            parameter("handsign", String::class)
+        }
+        "ROCK" {
+            superConstructor("fist".lit())
+            function("toString", String::class) {
+                override()
+                +"return %S".with("avalanche!")
+            }
+        }
+        "SCISSORS" {
+            superConstructor("peace".lit())
+        }
+        "PAPER" {
+            superConstructor("flat".lit())
+        }
+    }
+
+    println(
+        File("ExampleEleven") {
+            type(helloWorld)
+        }
+    )
+}
+
 fun example11Poet() { //Christ this is bad
     val helloWorld = TypeSpec.enumBuilder("Roshambo")
         .primaryConstructor(FunSpec.constructorBuilder()
@@ -31,8 +57,14 @@ fun example11Poet() { //Christ this is bad
             .initializer("handsign")
             .build())
         .build()
+
+    println(
+        File("ExampleEleven") {
+            type(helloWorld)
+        }
+    )
 }
-*/
+
 
 fun example10Sonnet() {
     val helloWorld = Interface("HelloWorld") {

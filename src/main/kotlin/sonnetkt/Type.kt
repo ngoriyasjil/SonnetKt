@@ -3,7 +3,7 @@ package sonnetkt
 import com.squareup.kotlinpoet.*
 import kotlin.reflect.KClass
 
-class Class private constructor(name: String): Type() {
+open class Class protected constructor(name: String): Type() {
 
     override var builder = TypeSpec.classBuilder(name)
 
@@ -31,6 +31,12 @@ class Class private constructor(name: String): Type() {
             spec { addModifiers(KModifier.ABSTRACT) }
         }
         AbstractBlock(this).block()
+    }
+
+    fun superConstructor(vararg arguments: Stanza) {
+        for (arg in arguments) {
+            spec { addSuperclassConstructorParameter(arg.format, *arg.args) }
+        }
     }
 }
 
@@ -105,4 +111,50 @@ abstract class Type {
         function(Function(name, block))
     }
 
+    fun function(name: String, returns: TypeName, block: Function.() -> Unit = {}) {
+        function(Function(name, returns, block))
+    }
+
+    fun function(name: String, returns: KClass<*>, block: Function.() -> Unit = {}) {
+        function(Function(name, returns, block))
+    }
+
+}
+
+class EnumClass(name: String) : Class(name) {
+    override var builder = TypeSpec.enumBuilder(name)
+
+    private fun build(block: EnumClass.() -> Unit): TypeSpec {
+        apply(block)
+        return builder.build()
+    }
+
+    companion object {
+        operator fun invoke(name: String, block: EnumClass.() -> Unit): TypeSpec {
+            return EnumClass(name).build(block)
+        }
+    }
+
+    operator fun String.invoke(block: AnonymousClass.() -> Unit = {}) {
+        enumConstant(this, block)
+    }
+
+    fun enumConstant(name: String, block: AnonymousClass.() -> Unit = {}) {
+        spec { addEnumConstant(name, AnonymousClass(block)) }
+    }
+}
+
+class AnonymousClass : Class("<anonymous>") {
+    override var builder = TypeSpec.anonymousClassBuilder()
+
+    private fun build(block: AnonymousClass.() -> Unit): TypeSpec {
+        apply(block)
+        return builder.build()
+    }
+
+    companion object {
+        operator fun invoke(block: AnonymousClass.() -> Unit): TypeSpec {
+            return AnonymousClass().build(block)
+        }
+    }
 }

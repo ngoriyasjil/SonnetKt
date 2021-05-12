@@ -80,6 +80,10 @@ open class Function protected constructor(name: String) {
 
     fun controlFlow(headline: String, block: Code.() -> Unit) =
         controlFlow(headline.with(), block)
+
+    fun override() {
+        spec { addModifiers(KModifier.OVERRIDE) }
+    }
 }
 
 class Constructor private constructor() : Function("constructor") {
