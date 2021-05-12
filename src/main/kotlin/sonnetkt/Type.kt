@@ -135,11 +135,12 @@ class EnumClass(name: String) : Class(name) {
         }
     }
 
-    operator fun String.invoke(block: AnonymousClass.() -> Unit = {}) {
-        enumConstant(this, block)
+    operator fun String.invoke(vararg constructorArguments: Stanza, block: AnonymousClass.() -> Unit = {}) {
+        enumConstant(this, *constructorArguments) { block() }
     }
 
-    fun enumConstant(name: String, block: AnonymousClass.() -> Unit = {}) {
+    fun enumConstant(name: String, vararg constructorArguments: Stanza, block: AnonymousClass.() -> Unit = {}) {
+        superConstructor(*constructorArguments)
         spec { addEnumConstant(name, AnonymousClass(block)) }
     }
 }

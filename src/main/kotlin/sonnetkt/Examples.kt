@@ -14,19 +14,14 @@ fun example11Sonnet() {
         primaryConstructor {
             parameter("handsign", String::class)
         }
-        "ROCK" {
-            superConstructor("fist".lit())
+        "ROCK"("fist".lit()) {
             function("toString", String::class) {
                 override()
                 +"return %S".with("avalanche!")
             }
         }
-        "SCISSORS" {
-            superConstructor("peace".lit())
-        }
-        "PAPER" {
-            superConstructor("flat".lit())
-        }
+        "SCISSORS"("peace".lit())
+        "PAPER"("flat".lit())
     }
 
     println(
