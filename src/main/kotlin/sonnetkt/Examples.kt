@@ -1,3 +1,5 @@
+@file:Suppress("unused")
+
 package sonnetkt
 
 import com.squareup.kotlinpoet.*
@@ -135,7 +137,7 @@ fun example8Sonnet() {
     val add = Function("add") {
         parameter("a", Int::class)
         parameter("b", Int::class) {
-            defaultValue = "%L".with(0)
+            defaultValue { +"%L".with(0) }
         }
         +"print(\"a + b = \${ a + b }\")"
     }
@@ -331,9 +333,8 @@ fun example3Sonnet() {
     val java = Property("java", String::class.nullable) {
         mutable = true
         visibility = Visibility.PRIVATE
-        initializer = "null" //initializer must be able to take code blocks
+        initializer { +"null" }
     }
-
     val helloWorld = Class("HelloWorld") {
         property(java)
         property("kotlin", String::class) { visibility = Visibility.PRIVATE }
@@ -409,7 +410,7 @@ fun example1Sonnet() {
             }
 
             property("name", String::class) {
-                initializer = "name"
+                initializer { +"name" }
             }
 
             function("greet") {

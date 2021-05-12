@@ -41,10 +41,8 @@ class Property private constructor(name: String, type: TypeName) {
             field = value
         }
 
-    var initializer: String = ""
-        set(value) {
-            spec { initializer(value) }
-            field = value
+    fun initializer(block: Code.() -> Unit) {
+            spec { initializer(Code(block)) }
         }
 
 }

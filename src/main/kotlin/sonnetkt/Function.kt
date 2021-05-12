@@ -130,11 +130,7 @@ class Parameter private constructor(name: String, type: TypeName) {
             field = value
         }
 
-    var defaultValue: Stanza? = null
-        set(value) {
-            if (value != null) {
-                spec { defaultValue(value.format, *value.args) }
-            }
-            field = value
-        }
+    fun defaultValue(block: Code.() -> Unit) {
+        spec { defaultValue(Code(block)) }
+    }
 }
