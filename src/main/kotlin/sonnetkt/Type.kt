@@ -3,13 +3,9 @@ package sonnetkt
 import com.squareup.kotlinpoet.*
 import kotlin.reflect.KClass
 
-class Class private constructor(name: String) { //generalize over TypeSpec
+class Class private constructor(name: String): Type() {
 
-    private var builder = TypeSpec.classBuilder(name)
-
-    private fun spec(method: TypeSpec.Builder.() -> TypeSpec.Builder) {
-        builder = builder.method()
-    }
+    override var builder = TypeSpec.classBuilder(name)
 
     private fun build(block: Class.() -> Unit): TypeSpec {
         apply(block)
@@ -28,26 +24,6 @@ class Class private constructor(name: String) { //generalize over TypeSpec
 
     fun primaryConstructor(block: Constructor.() -> Unit) {
         primaryConstructor(Constructor(block))
-    }
-
-    fun property(property: PropertySpec) {
-        spec { addProperty(property) }
-    }
-
-    fun property(name: String, type: KClass<*>, block: Property.() -> Unit) {
-        property(Property(name, type, block))
-    }
-
-    fun property(name: String, type: TypeName, block: Property.() -> Unit) {
-        property(Property(name, type, block))
-    }
-
-    fun function(function: FunSpec) {
-        spec { addFunction(function) }
-    }
-
-    fun function(name: String, block: Function.() -> Unit) {
-        function(Function(name, block))
     }
 
     fun abstract(block: AbstractBlock.() -> Unit = {}) {
@@ -73,13 +49,9 @@ class AbstractBlock(private val parent: Class) {
     }
 }
 
-class Interface private constructor(name: String) { //generalize over TypeSpec
+class Interface private constructor(name: String): Type() { //generalize over TypeSpec
 
-    private var builder = TypeSpec.interfaceBuilder(name)
-
-    private fun spec(method: TypeSpec.Builder.() -> TypeSpec.Builder) {
-        builder = builder.method()
-    }
+    override var builder = TypeSpec.interfaceBuilder(name)
 
     private fun build(block: Interface.() -> Unit): TypeSpec {
         apply(block)
@@ -91,4 +63,46 @@ class Interface private constructor(name: String) { //generalize over TypeSpec
             return Interface(name).build(block)
         }
     }
+
+    override fun function(function: FunSpec) {
+        spec {
+            addFunction(
+                function
+                    .toBuilder()
+                    .addModifiers(KModifier.ABSTRACT)
+                    .build()
+            )
+        }
+    }
+
+}
+
+abstract class Type {
+
+    protected abstract var builder: TypeSpec.Builder
+
+    protected fun spec(method: TypeSpec.Builder.() -> TypeSpec.Builder) {
+        builder = builder.method()
+    }
+
+    fun property(property: PropertySpec) {
+        spec { addProperty(property) }
+    }
+
+    fun property(name: String, type: KClass<*>, block: Property.() -> Unit = {}) {
+        property(Property(name, type, block))
+    }
+
+    fun property(name: String, type: TypeName, block: Property.() -> Unit = {}) {
+        property(Property(name, type, block))
+    }
+
+    open fun function(function: FunSpec) {
+        spec { addFunction(function) }
+    }
+
+    fun function(name: String, block: Function.() -> Unit = {}) {
+        function(Function(name, block))
+    }
+
 }

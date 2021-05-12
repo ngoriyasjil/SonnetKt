@@ -4,7 +4,7 @@ import com.squareup.kotlinpoet.*
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 
 fun main() {
-    example10Poet()
+    example10Sonnet()
 }
 
 /*
@@ -37,7 +37,7 @@ fun example11Poet() { //Christ this is bad
 fun example10Sonnet() {
     val helloWorld = Interface("HelloWorld") {
         property("buzz", String::class)
-        function("beep") { } //No need to mark it abstract, since it is in an interface
+        function("beep")
     }
 
     println(
