@@ -27,8 +27,9 @@ open class Function protected constructor(name: String) {
         operator fun invoke(name: String, returns: KClass<*>, block: Function.() -> Unit): FunSpec =
             invoke(name, returns.asTypeName(), block)
 
-        operator fun invoke(name: String, block: Function.() -> Unit) =
-            invoke(name, Unit::class.asTypeName(), block)
+        operator fun invoke(name: String, block: Function.() -> Unit): FunSpec {
+            return Function(name).build(block)
+        }
     }
 
     var visibility = Visibility.PUBLIC

@@ -71,12 +71,14 @@ class Interface private constructor(name: String): Type() { //generalize over Ty
     }
 
     override fun function(function: FunSpec) {
+
         spec {
             addFunction(
-                function
-                    .toBuilder()
-                    .addModifiers(KModifier.ABSTRACT)
-                    .build()
+                function.run {
+                    if (function.body.isEmpty()) {
+                        toBuilder().addModifiers(KModifier.ABSTRACT).build()
+                    } else this
+                }
             )
         }
     }
@@ -117,6 +119,22 @@ abstract class Type {
 
     fun function(name: String, returns: KClass<*>, block: Function.() -> Unit = {}) {
         function(Function(name, returns, block))
+    }
+
+    fun implements(inter: TypeName) {
+        spec { addSuperinterface(inter) }
+    }
+
+    fun implements(inter: KClass<*>) {
+        implements(inter.asTypeName())
+    }
+
+    fun implementsBy(inter: TypeName, delegateBlock: Code.() -> Unit) {
+        spec { addSuperinterface(inter, Code(delegateBlock)) }
+    }
+
+    fun implementsBy(inter: KClass<*>, delegateBlock: Code.() -> Unit) {
+        implementsBy(inter.asTypeName(), delegateBlock)
     }
 
 }
