@@ -25,4 +25,4 @@ class Stanza(val format: String, vararg val args: Any)
 
 fun String.with(vararg args: Any): Stanza = Stanza(this, *args)
 
-fun String.lit() = "%S".with(this)
+fun String.literal() = "%S".with(this)

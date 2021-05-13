@@ -14,21 +14,21 @@ fun example11Sonnet() {
         primaryConstructor {
             parameter("handsign", String::class)
         }
-        "ROCK"("fist".lit()) {
+        "ROCK"("fist".literal()) {
             function("toString", String::class) {
                 override()
                 +"return %S".with("avalanche!")
             }
         }
-        "SCISSORS"("peace".lit())
-        "PAPER"("flat".lit())
+        "SCISSORS"("peace".literal())
+        "PAPER"("flat".literal())
+        property("handsign", String::class) {
+            visibility = Visibility.PRIVATE
+            initializer { +"handsign" }
+        }
     }
 
-    println(
-        File("ExampleEleven") {
-            type(helloWorld)
-        }
-    )
+    println(helloWorld)
 }
 
 fun example11Poet() { //Christ this is bad
@@ -55,11 +55,7 @@ fun example11Poet() { //Christ this is bad
             .build())
         .build()
 
-    println(
-        File("ExampleEleven") {
-            type(helloWorld)
-        }
-    )
+    println(helloWorld)
 }
 
 
@@ -69,11 +65,7 @@ fun example10Sonnet() {
         function("beep")
     }
 
-    println(
-        File("ExampleTen") {
-            type(helloWorld)
-        }
-    )
+    println(helloWorld)
 }
 
 fun example10Poet() {
@@ -84,11 +76,7 @@ fun example10Poet() {
             .build())
         .build()
 
-    println(
-        File("ExampleTen") {
-            type(helloWorld)
-        }
-    )
+    println(helloWorld)
 }
 
 fun example9Sonnet() {
@@ -102,11 +90,7 @@ fun example9Sonnet() {
         property("greeting", String::class) { visibility = Visibility.PRIVATE }
     }
 
-    println(
-        File("ExampleNine") {
-            type(helloWorld)
-        }
-    )
+    println(helloWorld)
 
 }
 
@@ -121,11 +105,7 @@ fun example9Poet() {
         .addProperty("greeting", String::class, KModifier.PRIVATE)
         .build()
 
-    println(
-        File("ExampleNine") {
-            type(helloWorld)
-        }
-    )
+    println(helloWorld)
 }
 
 fun example8Sonnet() {
@@ -137,11 +117,7 @@ fun example8Sonnet() {
         +"print(\"a + b = \${ a + b }\")"
     }
 
-    println(
-        File("ExampleEight") {
-            function(add)
-        }
-    )
+    println(add)
 }
 
 fun example8Poet() {
@@ -153,11 +129,7 @@ fun example8Poet() {
         .addStatement("print(\"a + b = \${ a + b }\")")
         .build()
 
-    println(
-        File("ExampleEight") {
-            function(add)
-        }
-    )
+    println(add)
 }
 
 fun example7Sonnet() {
@@ -167,11 +139,7 @@ fun example7Sonnet() {
         +"return s"
     }
 
-    println(
-        File("ExampleSeven") {
-            function(square)
-        }
-    )
+    println(square)
 }
 
 fun example7Poet() {
@@ -182,11 +150,7 @@ fun example7Poet() {
         .addStatement("return s")
         .build()
 
-    println(
-        File("ExampleSeven") {
-            function(square)
-        }
-    )
+    println(square)
 }
 
 fun example6Sonnet() {
@@ -198,11 +162,7 @@ fun example6Sonnet() {
         abstract { function(flux) } //Hmmm.
     }
 
-    println(
-        File("ExampleSix") {
-            type(helloWorld)
-        }
-    )
+    println(helloWorld)
 }
 
 fun example6Poet() {
@@ -215,11 +175,7 @@ fun example6Poet() {
         .addFunction(flux)
         .build()
 
-    println(
-        File("ExampleSix") {
-            type(helloWorld)
-        }
-    )
+    println(helloWorld)
 }
 
 fun example5Sonnet() {
@@ -298,11 +254,7 @@ fun example4Sonnet() {
             +"return result"
         }
 
-    println(
-        File("ExampleFour") {
-            function(computeRange("multiply10to20", 10, 20, "*"))
-        }
-    )
+    println(computeRange("multiply10to20", 10, 20, "*"))
 }
 
 fun example4Poet() {
@@ -317,11 +269,7 @@ fun example4Poet() {
             .build()
     }
 
-    println(
-        FileSpec.builder("", "ExampleFour")
-            .addFunction(computeRange("multiply10to20", 10, 20, "*"))
-            .build()
-    )
+    println(computeRange("multiply10to20", 10, 20, "*"))
 }
 
 fun example3Sonnet() {

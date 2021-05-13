@@ -140,8 +140,11 @@ class EnumClass(name: String) : Class(name) {
     }
 
     fun enumConstant(name: String, vararg constructorArguments: Stanza, block: AnonymousClass.() -> Unit = {}) {
-        superConstructor(*constructorArguments)
-        spec { addEnumConstant(name, AnonymousClass(block)) }
+        val fullBlock: AnonymousClass.() -> Unit = {
+            apply { superConstructor(*constructorArguments) }
+            block()
+        }
+        spec { addEnumConstant(name, AnonymousClass(fullBlock)) }
     }
 }
 

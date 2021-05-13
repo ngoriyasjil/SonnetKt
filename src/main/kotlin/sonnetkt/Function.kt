@@ -18,7 +18,9 @@ open class Function protected constructor(name: String) {
     companion object {
         operator fun invoke(name: String, returns: TypeName, block: Function.() -> Unit): FunSpec {
             return Function(name)
-                .apply { returns(returns) }
+                .apply {
+                    spec { returns(returns) }
+                }
                 .build(block)
         }
 
@@ -44,14 +46,6 @@ open class Function protected constructor(name: String) {
 
     operator fun Stanza.unaryPlus() {
         spec { addStatement(format, *args) }
-    }
-
-    fun returns(type: TypeName) {
-        spec { returns(type) }
-    }
-
-    fun returns(type: KClass<*>) {
-        returns(type.asTypeName())
     }
 
     fun parameter(name: String, type: TypeName, block: Parameter.() -> Unit = {}) {
