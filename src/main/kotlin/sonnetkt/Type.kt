@@ -26,6 +26,14 @@ open class Class protected constructor(name: String): Type() {
         primaryConstructor(Constructor(block))
     }
 
+    fun secondaryConstructor(block: Constructor.() -> Unit) {
+        spec { addFunction(Constructor(block)) }
+    }
+
+    fun secondaryConstructor(constructor: FunSpec) { //Identical to function(), but expresses intent.
+        function(constructor)
+    }
+
     fun abstract(block: AbstractBlock.() -> Unit = {}) {
         if (KModifier.ABSTRACT !in builder.modifiers) {
             spec { addModifiers(KModifier.ABSTRACT) }

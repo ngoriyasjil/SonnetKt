@@ -42,7 +42,16 @@ class Property private constructor(name: String, type: TypeName) {
         }
 
     fun initializer(block: Code.() -> Unit) {
-            spec { initializer(Code(block)) }
-        }
+        spec { initializer(Code(block)) }
+    }
+
+    fun initializer(value: Stanza) {
+        spec { initializer(value.format, *value.args) }
+    }
+
+    fun initializer(value: String) {
+        initializer(value.with())
+    }
+
 
 }

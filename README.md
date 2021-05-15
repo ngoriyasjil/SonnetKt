@@ -34,7 +34,7 @@ val file = File("HelloWorld") {
         }
 
         property("name", String::class) { 
-            initializer { +"name" } 
+            initializer("name") 
         }
 
         function("greet") {

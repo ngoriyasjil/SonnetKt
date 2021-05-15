@@ -18,9 +18,7 @@ open class Function protected constructor(name: String) {
     companion object {
         operator fun invoke(name: String, returns: TypeName, block: Function.() -> Unit): FunSpec {
             return Function(name)
-                .apply {
-                    spec { returns(returns) }
-                }
+                .apply { spec { returns(returns) } }
                 .build(block)
         }
 
@@ -76,9 +74,15 @@ open class Function protected constructor(name: String) {
     fun controlFlow(headline: String, block: Code.() -> Unit) =
         controlFlow(headline.with(), block)
 
-    fun override() {
-        spec { addModifiers(KModifier.OVERRIDE) }
-    }
+    var override: Boolean
+        get() = KModifier.OVERRIDE in builder.modifiers
+        set(value) {
+            if (value) {
+                spec { addModifiers(KModifier.OVERRIDE) }
+            } else {
+                builder.modifiers.remove(KModifier.OVERRIDE)
+            }
+        }
 }
 
 class Constructor private constructor() : Function("constructor") {
@@ -127,5 +131,13 @@ class Parameter private constructor(name: String, type: TypeName) {
 
     fun defaultValue(block: Code.() -> Unit) {
         spec { defaultValue(Code(block)) }
+    }
+
+    fun defaultValue(value: Stanza) {
+        spec { defaultValue(value.format, *value.args) }
+    }
+
+    fun defaultValue(value: String) {
+        defaultValue(value.with())
     }
 }
