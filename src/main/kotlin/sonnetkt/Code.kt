@@ -21,11 +21,11 @@ open class Code {
     }
 
     operator fun Stanza.unaryPlus() {
-        spec { add(format, *args) }
+        spec { addStatement(format, *args) }
     }
 
     operator fun String.unaryPlus() {
-        +this.with()
+        spec { addStatement(this@unaryPlus) }
     }
 
     fun controlFlow(headline: Stanza, block: ControlFlowCode.() -> Unit) {

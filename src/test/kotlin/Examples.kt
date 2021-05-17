@@ -5,23 +5,18 @@ import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 fun example1Poet(): String {
     val greeterClass = ClassName("", "Greeter")
     val file = FileSpec.builder("", "HelloWorld")
-        .addType(
-            TypeSpec.classBuilder("Greeter")
-                .primaryConstructor(
-                    FunSpec.constructorBuilder()
+        .addType(TypeSpec.classBuilder("Greeter")
+                .primaryConstructor(FunSpec.constructorBuilder()
                         .addParameter("name", String::class)
                         .build())
-                .addProperty(
-                    PropertySpec.builder("name", String::class)
+                .addProperty(PropertySpec.builder("name", String::class)
                         .initializer("name")
                         .build())
-                .addFunction(
-                    FunSpec.builder("greet")
+                .addFunction(FunSpec.builder("greet")
                         .addStatement("println(%P)", "Hello, \$name")
                         .build())
                 .build())
-        .addFunction(
-            FunSpec.builder("main")
+        .addFunction(FunSpec.builder("main")
                 .addParameter("args", String::class, KModifier.VARARG)
                 .addStatement("%T(args[0]).greet()", greeterClass)
                 .build())

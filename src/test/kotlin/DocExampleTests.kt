@@ -36,7 +36,7 @@ class DocExampleTests {
                     }
 
                     property("name", String::class) {
-                        initializer { +"name" }
+                        initializer("name")
                     }
 
                     function("greet") {
@@ -79,8 +79,7 @@ class DocExampleTests {
 
             return main.toString()
         }
-        //Curly brace formatting fuckery means that these aren't equal.
-        assertNotEquals(example2Poet(), example2Sonnet())
+        assertEquals(example2Poet(), example2Sonnet())
         assertEquals(example2Poet(), example2Target)
     }
 
@@ -140,9 +139,8 @@ class DocExampleTests {
 
             return computeRange("multiply10to20", 10, 20, "*").toString()
         }
-
-        //More curly brace formatting fuckery
-        assertNotEquals(example4Poet(), example4Sonnet())
+        
+        assertEquals(example4Poet(), example4Sonnet())
         assertEquals(example4Poet(), example4Target)
     }
 
