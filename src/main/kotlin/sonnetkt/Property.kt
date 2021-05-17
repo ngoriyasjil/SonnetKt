@@ -5,7 +5,7 @@ import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.asTypeName
 import kotlin.reflect.KClass
 
-class Property private constructor(name: String, type: TypeName) {
+class Property private constructor(name: String, private val type: TypeName) {
     private var builder = PropertySpec.builder(name, type)
 
     private fun spec(method: PropertySpec.Builder.() -> PropertySpec.Builder) {
@@ -51,6 +51,15 @@ class Property private constructor(name: String, type: TypeName) {
 
     fun initializer(value: String) {
         initializer(value.with())
+    }
+
+    fun getter(block: Getter.() -> Unit) {
+        spec { getter(Getter(block)) }
+    }
+
+    fun setter(block: Setter.() -> Unit) {
+        mutable = true
+        spec { setter(Setter(type, block)) }
     }
 
 

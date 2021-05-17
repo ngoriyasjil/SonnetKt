@@ -185,3 +185,34 @@ fun example11Poet(): String { //Christ this is bad
     return helloWorld.toString()
 }
 
+fun example12Poet(): String {
+    val android = PropertySpec.builder("android", String::class)
+        .mutable()
+        .getter(FunSpec.getterBuilder()
+            .addModifiers(KModifier.INLINE)
+            .addStatement("return %S", "foo")
+            .build())
+        .setter(FunSpec.setterBuilder()
+            .addParameter("value", String::class)
+            .build())
+        .build()
+
+    return android.toString()
+}
+
+fun example13Poet(): String {
+    val android = PropertySpec.builder("android", String::class)
+        .mutable()
+        .getter(FunSpec.getterBuilder()
+            .addModifiers(KModifier.INLINE)
+            .addStatement("return %S", "foo")
+            .build())
+        .setter(FunSpec.setterBuilder()
+            .addModifiers(KModifier.INLINE)
+            .addParameter("value", String::class)
+            .build())
+        .build()
+
+    return android.toString()
+}
+

@@ -54,9 +54,9 @@ class ControlFlowCode: Code() {
         }
     }
 
-    fun nextControlFlow(line: Stanza) {
+    fun midControlFlow(line: Stanza) {
         spec { nextControlFlow(line.format, *line.args)}
     }
 
-    fun nextControlFlow(line: String) = nextControlFlow(line.with())
+    fun midControlFlow(line: String) = midControlFlow(line.with())
 }

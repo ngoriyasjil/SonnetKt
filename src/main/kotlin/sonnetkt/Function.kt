@@ -83,6 +83,16 @@ open class Function protected constructor(name: String) {
                 builder.modifiers.remove(KModifier.OVERRIDE)
             }
         }
+
+    var inline: Boolean
+        get() = KModifier.INLINE in builder.modifiers
+        set(value) {
+            if (value) {
+                spec { addModifiers(KModifier.INLINE) }
+            } else {
+                builder.modifiers.remove(KModifier.INLINE)
+            }
+        }
 }
 
 class Constructor private constructor() : Function("constructor") {
@@ -99,6 +109,43 @@ class Constructor private constructor() : Function("constructor") {
         }
     }
 }
+
+class Getter private constructor() : Function("get") {
+    override var builder = FunSpec.getterBuilder()
+
+    private fun build(block: Getter.() -> Unit): FunSpec {
+        apply(block)
+        return builder.build()
+    }
+
+    companion object {
+        operator fun invoke(block: Getter.() -> Unit): FunSpec {
+            return Getter().build(block)
+        }
+    }
+}
+
+class Setter private constructor(private val propertyType: TypeName) : Function("set") {
+    override var builder = FunSpec.setterBuilder()
+
+    private fun build(block: Setter.() -> Unit): FunSpec {
+        apply(block)
+        return builder.build()
+    }
+
+    companion object {
+        operator fun invoke(type: TypeName, block: Setter.() -> Unit): FunSpec {
+            return Setter(type).build(block)
+        }
+    }
+
+    fun parameter(name: String) {
+        super.parameter(name, propertyType) {}
+    }
+
+}
+
+
 
 class Parameter private constructor(name: String, type: TypeName) {
     private var builder = ParameterSpec.builder(name, type)

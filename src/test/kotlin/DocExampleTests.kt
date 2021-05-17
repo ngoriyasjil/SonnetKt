@@ -1,9 +1,7 @@
 import com.squareup.kotlinpoet.FunSpec
 import org.junit.Test
 import sonnetkt.*
-import sonnetkt.Function
 import kotlin.test.assertEquals
-import kotlin.test.assertNotEquals
 
 class DocExampleTests {
     @Test
@@ -43,6 +41,7 @@ class DocExampleTests {
                         +"println(%P)".with("Hello, \$name")
                     }
                 }
+
                 function("main") {
                     parameter("args", String::class) { vararg = true }
                     +"%T(args[0]).greet()".with(greeterClass)
@@ -139,7 +138,7 @@ class DocExampleTests {
 
             return computeRange("multiply10to20", 10, 20, "*").toString()
         }
-        
+
         assertEquals(example4Poet(), example4Sonnet())
         assertEquals(example4Poet(), example4Target)
     }
@@ -354,14 +353,18 @@ class DocExampleTests {
                 primaryConstructor {
                     parameter("handsign", String::class)
                 }
+
                 "ROCK"("fist".literal()) {
                     function("toString", String::class) {
                         override = true
                         +"return %S".with("avalanche!")
                     }
                 }
+
                 "SCISSORS"("peace".literal())
+
                 "PAPER"("flat".literal())
+
                 property("handsign", String::class) {
                     visibility = Visibility.PRIVATE
                     initializer("handsign")
@@ -373,5 +376,62 @@ class DocExampleTests {
 
         assertEquals(example11Poet(), example11Sonnet())
         assertEquals(example11Poet(), example11Target)
+    }
+
+    @Test
+    fun example12() {
+        val example12Target = """
+            var android: kotlin.String
+              inline get() = "foo"
+              set(`value`) {
+              }
+
+        """.trimIndent()
+
+        fun example12Sonnet(): String {
+            val android = Property("android", String::class) {
+                getter {
+                    inline = true
+                    +"return %S".with("foo")
+                }
+                setter {
+                    parameter("value") // The setter parameter type is automatically the same as the property type
+                }
+            }
+
+            return android.toString()
+        }
+
+        assertEquals(example12Poet(), example12Sonnet())
+        assertEquals(example12Poet(), example12Target)
+    }
+
+    @Test
+    fun example13() {
+        val example13Target = """
+            inline var android: kotlin.String
+              get() = "foo"
+              set(`value`) {
+              }
+
+        """.trimIndent()
+
+        fun example13Sonnet(): String {
+            val android = Property("android", String::class) {
+                getter {
+                    inline = true
+                    +"return %S".with("foo")
+                }
+                setter {
+                    inline = true
+                    parameter("value")
+                }
+            }
+
+            return android.toString()
+        }
+
+        assertEquals(example13Poet(), example13Sonnet())
+        assertEquals(example13Poet(), example13Target)
     }
 }
