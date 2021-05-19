@@ -188,3 +188,46 @@ class AnonymousClass : Class("<anonymous>") {
         }
     }
 }
+
+class Object private constructor(name: String) : Class(name) {
+    override var builder = TypeSpec.objectBuilder(name)
+
+    private fun build(block: Object.() -> Unit): TypeSpec {
+        apply(block)
+        return builder.build()
+    }
+
+    companion object {
+        operator fun invoke(name: String, block: Object.() -> Unit): TypeSpec {
+            return Object(name).build(block)
+        }
+    }
+}
+
+public class Annotation private constructor(type: ClassName) {
+    private var builder = AnnotationSpec.builder(type)
+
+    private fun spec(method: AnnotationSpec.Builder.() -> AnnotationSpec.Builder) {
+        builder = builder.method()
+    }
+
+    private fun build(block: Annotation.() -> Unit): AnnotationSpec {
+        apply(block)
+        return builder.build()
+    }
+
+    companion object {
+        operator fun invoke(name: ClassName, block: Annotation.() -> Unit): AnnotationSpec {
+            return Annotation(name).build(block)
+        }
+    }
+
+    fun argument(name: String, value: Stanza) {
+        //Dangerous if name contains format strings! Add a check?
+        spec { addMember("$name = ${value.format}", *value.args) }
+    }
+
+    fun argument(value: Stanza) {
+        spec { addMember(value.format, *value.args) }
+    }
+}

@@ -1,6 +1,7 @@
 import sonnetkt.*
 import com.squareup.kotlinpoet.*
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
+import org.junit.Test
 
 fun example1Poet(): String {
     val greeterClass = ClassName("", "Greeter")
@@ -216,3 +217,105 @@ fun example13Poet(): String {
     return android.toString()
 }
 
+fun example14Poet(): String {
+    val createTaco = MemberName("com.squareup.tacos", "createTaco")
+    val isVegan = MemberName("com.squareup.tacos", "isVegan")
+    val file = FileSpec.builder("com.squareup.example", "TacoTest")
+        .addFunction(FunSpec.builder("main")
+            .addStatement("val taco = %M()", createTaco)
+            .addStatement("println(taco.%M)", isVegan)
+            .build())
+        .build()
+
+    return file.toString()
+}
+
+fun example15Poet(): String {
+    val createTaco = MemberName("com.squareup.tacos", "createTaco")
+    val createCake = MemberName("com.squareup.cakes", "createCake")
+    val isTacoVegan = MemberName("com.squareup.tacos", "isVegan")
+    val isCakeVegan = MemberName("com.squareup.cakes", "isVegan")
+    val file = FileSpec.builder("com.squareup.example", "Test")
+        .addAliasedImport(isTacoVegan, "isTacoVegan")
+        .addAliasedImport(isCakeVegan, "isCakeVegan")
+        .addFunction(FunSpec.builder("main")
+            .addStatement("val taco = %M()", createTaco)
+            .addStatement("val cake = %M()", createCake)
+            .addStatement("println(taco.%M)", isTacoVegan)
+            .addStatement("println(cake.%M)", isCakeVegan)
+            .build())
+        .build()
+
+    return file.toString()
+}
+
+fun example16Poet(): String {
+    val hexDigit = FunSpec.builder("hexDigit")
+        .addParameter("i", Int::class)
+        .returns(Char::class)
+        .addStatement("return (if (i < 10) i + '0'.toInt() else i - 10 + 'a'.toInt()).toChar()")
+        .build()
+
+    val byteToHex = FunSpec.builder("byteToHex")
+        .addParameter("b", Int::class)
+        .returns(String::class)
+        .addStatement("val result = CharArray(2)")
+        .addStatement("result[0] = %N((b ushr 4) and 0xf)", hexDigit)
+        .addStatement("result[1] = %N(b and 0xf)", hexDigit)
+        .addStatement("return String(result)")
+        .build()
+
+    val file = FileSpec.builder("", "Example16")
+        .addFunction(hexDigit)
+        .addFunction(byteToHex)
+        .build()
+
+    return file.toString()
+}
+
+fun example17Poet(): String {
+    val helloWorld = TypeSpec.objectBuilder("HelloWorld")
+        .addProperty(PropertySpec.builder("buzz", String::class)
+            .initializer("%S", "buzz")
+            .build())
+        .addFunction(FunSpec.builder("beep")
+            .addStatement("println(%S)", "Beep!")
+            .build())
+        .build()
+
+    return helloWorld.toString()
+}
+
+fun example18Poet(): String {
+    val test = FunSpec.builder("test string equality")
+        .addAnnotation(Test::class)
+        .addStatement("assertThat(%1S).isEqualTo(%1S)", "foo")
+        .build()
+
+    return test.toString()
+}
+
+fun example19Poet(): String {
+    val logRecordName = ClassName("", "LogRecord")
+    val logReceipt = ClassName("", "LogReceipt")
+    val headerList = ClassName("", "HeaderList")
+    val header = ClassName("", "Header")
+    val logRecord = FunSpec.builder("recordEvent")
+        .addAnnotation(AnnotationSpec.builder(headerList)
+            .addMember(
+                "[\n⇥%L,\n%L⇤\n]",
+                AnnotationSpec.builder(header)
+                    .addMember("name = %S", "Accept")
+                    .addMember("value = %S", "application/json; charset=utf-8")
+                    .build(),
+                AnnotationSpec.builder(header)
+                    .addMember("name = %S", "User-Agent")
+                    .addMember("value = %S", "Square Cash")
+                    .build())
+            .build())
+        .addParameter("logRecord", logRecordName)
+        .returns(logReceipt)
+        .build()
+
+    return logRecord.toString()
+}

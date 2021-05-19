@@ -1,9 +1,6 @@
 package sonnetkt
 
-import com.squareup.kotlinpoet.FileSpec
-import com.squareup.kotlinpoet.FunSpec
-import com.squareup.kotlinpoet.TypeName
-import com.squareup.kotlinpoet.TypeSpec
+import com.squareup.kotlinpoet.*
 import kotlin.reflect.KClass
 
 class File private constructor(name: String, packageName: String = "") {
@@ -47,5 +44,17 @@ class File private constructor(name: String, packageName: String = "") {
 
     fun function(name: String, returns: KClass<*>, block: Function.() -> Unit) {
         function(Function(name, returns, block))
+    }
+
+    fun importAlias(member: MemberName, alias: String) {
+        spec { addAliasedImport(member, alias) }
+    }
+
+    fun importAlias(type: ClassName, alias: String) {
+        spec { addAliasedImport(type, alias) }
+    }
+
+    fun importAlias(type: KClass<*>, alias: String) {
+        spec { addAliasedImport(type, alias) }
     }
 }

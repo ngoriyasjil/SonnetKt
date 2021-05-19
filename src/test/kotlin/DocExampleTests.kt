@@ -3,9 +3,9 @@ import org.junit.Test
 import sonnetkt.*
 import kotlin.test.assertEquals
 
-class DocExampleTests {
+public class DocExampleTests {
     @Test
-    fun example1() {
+    public fun example1() {
 
         val example1Target = """
             import kotlin.String
@@ -56,7 +56,7 @@ class DocExampleTests {
     }
 
     @Test
-    fun example2() {
+    public fun example2() {
 
         val example2Target = """
             public fun main(): kotlin.Unit {
@@ -84,7 +84,7 @@ class DocExampleTests {
 
 
     @Test
-    fun example3() {
+    public fun example3() {
 
         val example3Target = """
             public class HelloWorld {
@@ -114,7 +114,7 @@ class DocExampleTests {
     }
 
     @Test
-    fun example4() {
+    public fun example4() {
         val example4Target = """
             public fun multiply10to20(): kotlin.Int {
               var result = 1
@@ -144,7 +144,7 @@ class DocExampleTests {
     }
 
     @Test
-    fun example5() {
+    public fun example5() {
         val example5Target = """
             import com.mattel.Hoverboard
             import com.misc.Thing
@@ -204,7 +204,7 @@ class DocExampleTests {
 
 
     @Test
-    fun example6() {
+    public fun example6() {
         val example6Target = """
             public abstract class HelloWorld {
               protected abstract fun flux(): kotlin.Unit
@@ -229,7 +229,7 @@ class DocExampleTests {
     }
 
     @Test
-    fun example7() {
+    public fun example7() {
         val example7Target = """
             public fun kotlin.Int.square(): kotlin.Int {
               var s = this * this
@@ -253,7 +253,7 @@ class DocExampleTests {
     }
 
     @Test
-    fun example8() {
+    public fun example8() {
         val example8Target = """
             public fun add(a: kotlin.Int, b: kotlin.Int = 0): kotlin.Unit {
               print("a + b = ${'$'}{ a + b }")
@@ -278,7 +278,7 @@ class DocExampleTests {
     }
 
     @Test
-    fun example9() {
+    public fun example9() {
         val example9Target = """
             public class HelloWorld(
               greeting: kotlin.String
@@ -309,7 +309,7 @@ class DocExampleTests {
     }
 
     @Test
-    fun example10() {
+    public fun example10() {
         val example10Target = """
             public interface HelloWorld {
               public val buzz: kotlin.String
@@ -333,7 +333,7 @@ class DocExampleTests {
     }
 
     @Test
-    fun example11() {
+    public fun example11() {
         val example11Target = """
             public enum class Roshambo(
               private val handsign: kotlin.String
@@ -379,7 +379,7 @@ class DocExampleTests {
     }
 
     @Test
-    fun example12() {
+    public fun example12() {
         val example12Target = """
             var android: kotlin.String
               inline get() = "foo"
@@ -407,7 +407,7 @@ class DocExampleTests {
     }
 
     @Test
-    fun example13() {
+    public fun example13() {
         val example13Target = """
             inline var android: kotlin.String
               get() = "foo"
@@ -434,4 +434,246 @@ class DocExampleTests {
         assertEquals(example13Poet(), example13Sonnet())
         assertEquals(example13Poet(), example13Target)
     }
+
+    @Test
+    public fun example14() {
+        val example14Target = """
+            package com.squareup.example
+
+            import com.squareup.tacos.createTaco
+            import com.squareup.tacos.isVegan
+            import kotlin.Unit
+
+            public fun main(): Unit {
+              val taco = createTaco()
+              println(taco.isVegan)
+            }
+
+        """.trimIndent()
+
+        fun example14Sonnet(): String {
+            val createTaco = className("tacos")
+                .fromPackage("com.squareup")
+                .member("createTaco")
+            val isVegan = className("tacos")
+                .fromPackage("com.squareup")
+                .member("isVegan")
+
+            val file = File("TacoTest",
+                packageName = "com.squareup.example") {
+                function("main") {
+                    +"val taco = %M()".with(createTaco)
+                    +"println(taco.%M)".with(isVegan)
+                }
+            }
+
+            return file.toString()
+        }
+
+        assertEquals(example14Poet(), example14Sonnet())
+        assertEquals(example14Poet(), example14Target)
+    }
+
+    @Test
+    public fun example15() {
+        val example15Target = """
+            package com.squareup.example
+
+            import com.squareup.cakes.createCake
+            import com.squareup.tacos.createTaco
+            import kotlin.Unit
+            import com.squareup.cakes.isVegan as isCakeVegan
+            import com.squareup.tacos.isVegan as isTacoVegan
+
+            public fun main(): Unit {
+              val taco = createTaco()
+              val cake = createCake()
+              println(taco.isTacoVegan)
+              println(cake.isCakeVegan)
+            }
+
+        """.trimIndent()
+
+        fun example15Sonnet(): String {
+            val createTaco = memberName("createTaco")
+                .fromPackage("com.squareup.tacos")
+            val createCake = memberName("createCake")
+                .fromPackage("com.squareup.cakes")
+            val isTacoVegan = memberName("isVegan")
+                .fromPackage("com.squareup.tacos")
+            val isCakeVegan = memberName("isVegan")
+                .fromPackage("com.squareup.cakes")
+
+            val file = File("Test",
+                packageName = "com.squareup.example") {
+                importAlias(isTacoVegan, "isTacoVegan")
+                importAlias(isCakeVegan, "isCakeVegan")
+                function("main") {
+                    +"val taco = %M()".with(createTaco)
+                    +"val cake = %M()".with(createCake)
+                    +"println(taco.%M)".with(isTacoVegan)
+                    +"println(cake.%M)".with(isCakeVegan)
+                }
+            }
+
+            return file.toString()
+        }
+
+        assertEquals(example15Poet(), example15Sonnet())
+        assertEquals(example15Poet(), example15Target)
+    }
+
+    @Test
+    public fun example16() {
+        val example16Target = """
+            import kotlin.Char
+            import kotlin.Int
+            import kotlin.String
+
+            public fun hexDigit(i: Int): Char = (if (i < 10) i + '0'.toInt() else i - 10 + 'a'.toInt()).toChar()
+
+            public fun byteToHex(b: Int): String {
+              val result = CharArray(2)
+              result[0] = hexDigit((b ushr 4) and 0xf)
+              result[1] = hexDigit(b and 0xf)
+              return String(result)
+            }
+
+        """.trimIndent()
+
+        fun example16Sonnet(): String {
+            val hexDigit = Function("hexDigit", Char::class) {
+                parameter("i", Int::class)
+                +"return (if (i < 10) i + '0'.toInt() else i - 10 + 'a'.toInt()).toChar()"
+            }
+            val byteToHex = Function("byteToHex", String::class) {
+                parameter("b", Int::class)
+                +"val result = CharArray(2)"
+                +"result[0] = %N((b ushr 4) and 0xf)".with(hexDigit)
+                +"result[1] = %N(b and 0xf)".with(hexDigit)
+                +"return String(result)"
+            }
+
+            val file = File("Example16") {
+                function(hexDigit)
+                function(byteToHex)
+            }
+
+            return file.toString()
+        }
+
+        assertEquals(example16Poet(), example16Sonnet())
+        assertEquals(example16Poet(), example16Target)
+    }
+
+    @Test
+    public fun example17() {
+        val example17Target = """
+            public object HelloWorld {
+              public val buzz: kotlin.String = "buzz"
+
+              public fun beep(): kotlin.Unit {
+                println("Beep!")
+              }
+            }
+
+        """.trimIndent()
+
+        fun example17Sonnet(): String {
+            val helloWorld = Object("HelloWorld") {
+                property("buzz", String::class) {
+                    initializer("buzz".literal())
+                }
+                function("beep") {
+                    +"println(%S)".with("Beep!")
+                }
+            }
+
+            return helloWorld.toString()
+        }
+
+        assertEquals(example17Poet(), example17Sonnet())
+        assertEquals(example17Poet(), example17Target)
+    }
+
+    @Test
+    public fun example18() {
+        val example18Target = """
+            @org.junit.Test
+            public fun `test string equality`(): kotlin.Unit {
+              assertThat("foo").isEqualTo("foo")
+            }
+
+        """.trimIndent()
+
+        fun example18Sonnet(): String {
+            val test = Function("test string equality") {
+                annotation(Test::class)
+                +"assertThat(%1S).isEqualTo(%1S)".with("foo")
+            }
+            return test.toString()
+        }
+
+        assertEquals(example18Poet(), example18Sonnet())
+        assertEquals(example18Poet(), example18Target)
+    }
+
+    @Test
+    public fun example19() {
+        val example19Target = """
+            @HeaderList([
+              Header(name = "Accept", value = "application/json; charset=utf-8"),
+              Header(name = "User-Agent", value = "Square Cash")
+            ])
+            public fun recordEvent(logRecord: LogRecord): LogReceipt {
+            }
+
+        """.trimIndent()
+
+        fun example19Sonnet(): String {
+            val logRecordName = className("LogRecord")
+            val logReceipt = className("LogReceipt")
+            val headerList = className("HeaderList")
+            val header = className("Header")
+
+            val logRecord = Function("recordEvent", logReceipt) {
+                annotation(headerList) {
+                    argument(
+                        "[\n⇥%L,\n%L⇤\n]".with( //What even is this?
+                            Annotation(header) {
+                                argument("name", "Accept".literal())
+                                argument("value", "application/json; charset=utf-8".literal())
+                            },
+                            Annotation(header) {
+                                argument("name", "User-Agent".literal())
+                                argument("value", "Square Cash".literal())
+                            }
+                        )
+                    )
+                }
+                parameter("logRecord", logRecordName)
+            }
+
+            return logRecord.toString()
+        }
+
+        assertEquals(example19Poet(), example19Sonnet())
+        assertEquals(example19Poet(), example19Target)
+    }
 }
+
+/*
+    @Test
+    fun exampleX() {
+        val exampleXTarget = """
+
+        """.trimIndent()
+
+        fun exampleXSonnet(): String {
+            return ""
+        }
+
+        assertEquals(exampleXPoet(), exampleXSonnet())
+        assertEquals(exampleXPoet(), exampleXTarget)
+    }
+ */

@@ -93,6 +93,20 @@ open class Function protected constructor(name: String) {
                 builder.modifiers.remove(KModifier.INLINE)
             }
         }
+
+    fun annotation(type: ClassName) {
+        spec { addAnnotation(type) }
+    }
+
+    fun annotation(type: KClass<*>) {
+        annotation(type.asClassName())
+    }
+
+    fun annotation(type: ClassName, block: Annotation.() -> Unit) {
+        spec { addAnnotation(Annotation(type, block)) }
+    }
+
+
 }
 
 class Constructor private constructor() : Function("constructor") {
@@ -142,7 +156,6 @@ class Setter private constructor(private val propertyType: TypeName) : Function(
     fun parameter(name: String) {
         super.parameter(name, propertyType) {}
     }
-
 }
 
 
