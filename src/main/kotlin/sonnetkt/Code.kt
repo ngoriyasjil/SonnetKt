@@ -2,8 +2,8 @@ package sonnetkt
 
 import com.squareup.kotlinpoet.CodeBlock
 
-open class Code {
-    protected var builder = CodeBlock.builder()
+public open class Code {
+    protected var builder: CodeBlock.Builder = CodeBlock.builder()
 
     protected fun spec(method: CodeBlock.Builder.() -> CodeBlock.Builder) {
         builder = builder.method()
@@ -14,21 +14,21 @@ open class Code {
         return builder.build()
     }
 
-    companion object {
-        operator fun invoke(block: Code.() -> Unit): CodeBlock {
+    public companion object {
+        public operator fun invoke(block: Code.() -> Unit): CodeBlock {
             return Code().build(block)
         }
     }
 
-    operator fun Stanza.unaryPlus() {
+    public operator fun Stanza.unaryPlus() {
         spec { addStatement(format, *args) }
     }
 
-    operator fun String.unaryPlus() {
+    public operator fun String.unaryPlus() {
         spec { addStatement(this@unaryPlus) }
     }
 
-    fun controlFlow(headline: Stanza, block: ControlFlowCode.() -> Unit) {
+    public fun controlFlow(headline: Stanza, block: ControlFlowCode.() -> Unit) {
         spec {
             beginControlFlow(headline.format, *headline.args)
             add(ControlFlowCode(block))
@@ -36,27 +36,31 @@ open class Code {
         }
     }
 
-    fun controlFlow(headline: String, block: Code.() -> Unit) =
+    public fun controlFlow(headline: String, block: Code.() -> Unit) {
         controlFlow(headline.with(), block)
+    }
+
 
 }
 
-class ControlFlowCode: Code() {
+public class ControlFlowCode private constructor(): Code() {
 
-    fun build(block: ControlFlowCode.() -> Unit): CodeBlock {
+    private fun build(block: ControlFlowCode.() -> Unit): CodeBlock {
         apply(block)
         return builder.build()
     }
 
-    companion object {
-        operator fun invoke(block: ControlFlowCode.() -> Unit): CodeBlock {
+    public companion object {
+        public operator fun invoke(block: ControlFlowCode.() -> Unit): CodeBlock {
             return ControlFlowCode().build(block)
         }
     }
 
-    fun midControlFlow(line: Stanza) {
+    public fun midControlFlow(line: Stanza) {
         spec { nextControlFlow(line.format, *line.args)}
     }
 
-    fun midControlFlow(line: String) = midControlFlow(line.with())
+    public fun midControlFlow(line: String) {
+        midControlFlow(line.with())
+    }
 }

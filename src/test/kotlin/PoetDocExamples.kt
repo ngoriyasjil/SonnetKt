@@ -3,7 +3,7 @@ import com.squareup.kotlinpoet.*
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import org.junit.Test
 
-fun example1Poet(): String {
+public fun example1Poet(): String {
     val greeterClass = ClassName("", "Greeter")
     val file = FileSpec.builder("", "HelloWorld")
         .addType(TypeSpec.classBuilder("Greeter")
@@ -26,7 +26,7 @@ fun example1Poet(): String {
     return file.toString()
 }
 
-fun example2Poet(): String {
+public fun example2Poet(): String {
     val main = FunSpec.builder("main")
         .addStatement("var total = 0")
         .beginControlFlow("for (i in 0 until 10)")
@@ -37,7 +37,7 @@ fun example2Poet(): String {
     return main.toString()
 }
 
-fun example3Poet(): String {
+public fun example3Poet(): String {
     val java = PropertySpec.builder("java", String::class.asTypeName().copy(nullable = true))
         .mutable()
         .addModifiers(KModifier.PRIVATE)
@@ -52,7 +52,7 @@ fun example3Poet(): String {
     return helloWorld.toString()
 }
 
-fun example4Poet(): String {
+public fun example4Poet(): String {
     fun computeRange(name: String, from: Int, to: Int, op: String): FunSpec {
         return FunSpec.builder(name)
             .returns(Int::class)
@@ -67,7 +67,7 @@ fun example4Poet(): String {
     return computeRange("multiply10to20", 10, 20, "*").toString()
 }
 
-fun example5Poet(): String {
+public fun example5Poet(): String {
     val hoverboard = ClassName("com.mattel", "Hoverboard")
     val list = ClassName("kotlin.collections", "List")
     val arrayList = ClassName("kotlin.collections", "ArrayList")
@@ -98,7 +98,7 @@ fun example5Poet(): String {
     }.toString()
 }
 
-fun example6Poet(): String {
+public fun example6Poet(): String {
     val flux = FunSpec.builder("flux")
         .addModifiers(KModifier.ABSTRACT, KModifier.PROTECTED)
         .build()
@@ -111,7 +111,7 @@ fun example6Poet(): String {
     return helloWorld.toString()
 }
 
-fun example7Poet(): String {
+public fun example7Poet(): String {
     val square = FunSpec.builder("square")
         .receiver(Int::class)
         .returns(Int::class)
@@ -122,7 +122,7 @@ fun example7Poet(): String {
     return square.toString()
 }
 
-fun example8Poet(): String {
+public fun example8Poet(): String {
     val add = FunSpec.builder("add")
         .addParameter("a", Int::class)
         .addParameter(ParameterSpec.builder("b", Int::class)
@@ -134,7 +134,7 @@ fun example8Poet(): String {
     return add.toString()
 }
 
-fun example9Poet(): String {
+public fun example9Poet(): String {
     val flux = FunSpec.constructorBuilder()
         .addParameter("greeting", String::class)
         .addStatement("this.%N = %N", "greeting", "greeting")
@@ -148,7 +148,7 @@ fun example9Poet(): String {
     return helloWorld.toString()
 }
 
-fun example10Poet(): String {
+public fun example10Poet(): String {
     val helloWorld = TypeSpec.interfaceBuilder("HelloWorld")
         .addProperty("buzz", String::class)
         .addFunction(FunSpec.builder("beep")
@@ -159,7 +159,7 @@ fun example10Poet(): String {
     return helloWorld.toString()
 }
 
-fun example11Poet(): String { //Christ this is bad
+public fun example11Poet(): String { //Christ this is bad
     val helloWorld = TypeSpec.enumBuilder("Roshambo")
         .primaryConstructor(FunSpec.constructorBuilder()
             .addParameter("handsign", String::class)
@@ -186,7 +186,7 @@ fun example11Poet(): String { //Christ this is bad
     return helloWorld.toString()
 }
 
-fun example12Poet(): String {
+public fun example12Poet(): String {
     val android = PropertySpec.builder("android", String::class)
         .mutable()
         .getter(FunSpec.getterBuilder()
@@ -201,7 +201,7 @@ fun example12Poet(): String {
     return android.toString()
 }
 
-fun example13Poet(): String {
+public fun example13Poet(): String {
     val android = PropertySpec.builder("android", String::class)
         .mutable()
         .getter(FunSpec.getterBuilder()
@@ -217,7 +217,7 @@ fun example13Poet(): String {
     return android.toString()
 }
 
-fun example14Poet(): String {
+public fun example14Poet(): String {
     val createTaco = MemberName("com.squareup.tacos", "createTaco")
     val isVegan = MemberName("com.squareup.tacos", "isVegan")
     val file = FileSpec.builder("com.squareup.example", "TacoTest")
@@ -230,7 +230,7 @@ fun example14Poet(): String {
     return file.toString()
 }
 
-fun example15Poet(): String {
+public fun example15Poet(): String {
     val createTaco = MemberName("com.squareup.tacos", "createTaco")
     val createCake = MemberName("com.squareup.cakes", "createCake")
     val isTacoVegan = MemberName("com.squareup.tacos", "isVegan")
@@ -249,7 +249,7 @@ fun example15Poet(): String {
     return file.toString()
 }
 
-fun example16Poet(): String {
+public fun example16Poet(): String {
     val hexDigit = FunSpec.builder("hexDigit")
         .addParameter("i", Int::class)
         .returns(Char::class)
@@ -273,7 +273,7 @@ fun example16Poet(): String {
     return file.toString()
 }
 
-fun example17Poet(): String {
+public fun example17Poet(): String {
     val helloWorld = TypeSpec.objectBuilder("HelloWorld")
         .addProperty(PropertySpec.builder("buzz", String::class)
             .initializer("%S", "buzz")
@@ -286,7 +286,7 @@ fun example17Poet(): String {
     return helloWorld.toString()
 }
 
-fun example18Poet(): String {
+public fun example18Poet(): String {
     val test = FunSpec.builder("test string equality")
         .addAnnotation(Test::class)
         .addStatement("assertThat(%1S).isEqualTo(%1S)", "foo")
@@ -295,7 +295,7 @@ fun example18Poet(): String {
     return test.toString()
 }
 
-fun example19Poet(): String {
+public fun example19Poet(): String {
     val logRecordName = ClassName("", "LogRecord")
     val logReceipt = ClassName("", "LogReceipt")
     val headerList = ClassName("", "HeaderList")

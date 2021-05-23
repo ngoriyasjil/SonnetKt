@@ -3,53 +3,53 @@ package sonnetkt
 import com.squareup.kotlinpoet.*
 import kotlin.reflect.KClass
 
-open class Class protected constructor(name: String): Type() {
+public open class Class protected constructor(name: String): Type() {
 
-    override var builder = TypeSpec.classBuilder(name)
+    override var builder: TypeSpec.Builder = TypeSpec.classBuilder(name)
 
     private fun build(block: Class.() -> Unit): TypeSpec {
         apply(block)
         return builder.build()
     }
 
-    companion object {
-        operator fun invoke(name: String, block: Class.() -> Unit): TypeSpec {
+    public companion object {
+        public operator fun invoke(name: String, block: Class.() -> Unit): TypeSpec {
             return Class(name).build(block)
         }
     }
 
-    fun primaryConstructor(constructor: FunSpec) {
+    public fun primaryConstructor(constructor: FunSpec) {
         spec { primaryConstructor(constructor) }
     }
 
-    fun primaryConstructor(block: Constructor.() -> Unit) {
+    public fun primaryConstructor(block: Constructor.() -> Unit) {
         primaryConstructor(Constructor(block))
     }
 
-    fun secondaryConstructor(block: Constructor.() -> Unit) {
+    public fun secondaryConstructor(block: Constructor.() -> Unit) {
         spec { addFunction(Constructor(block)) }
     }
 
-    fun secondaryConstructor(constructor: FunSpec) { //Identical to function(), but expresses intent.
+    public fun secondaryConstructor(constructor: FunSpec) { //Identical to function(), but expresses intent.
         function(constructor)
     }
 
-    fun abstract(block: AbstractBlock.() -> Unit = {}) {
+    public fun abstract(block: AbstractBlock.() -> Unit = {}) {
         if (KModifier.ABSTRACT !in builder.modifiers) {
             spec { addModifiers(KModifier.ABSTRACT) }
         }
         AbstractBlock(this).block()
     }
 
-    fun superConstructor(vararg arguments: Stanza) {
+    public fun superConstructor(vararg arguments: Stanza) {
         for (arg in arguments) {
             spec { addSuperclassConstructorParameter(arg.format, *arg.args) }
         }
     }
 }
 
-class AbstractBlock(private val parent: Class) {
-    fun function(function: FunSpec) {
+public class AbstractBlock(private val parent: Class) {
+    public fun function(function: FunSpec) {
         parent.function(
             function
                 .toBuilder()
@@ -58,22 +58,22 @@ class AbstractBlock(private val parent: Class) {
         )
     }
 
-    fun function(name: String, block: Function.() -> Unit) {
+    public fun function(name: String, block: Function.() -> Unit) {
         function(Function(name, block))
     }
 }
 
-class Interface private constructor(name: String): Type() { //generalize over TypeSpec
+public class Interface private constructor(name: String): Type() { //generalize over TypeSpec
 
-    override var builder = TypeSpec.interfaceBuilder(name)
+    override var builder: TypeSpec.Builder = TypeSpec.interfaceBuilder(name)
 
     private fun build(block: Interface.() -> Unit): TypeSpec {
         apply(block)
         return builder.build()
     }
 
-    companion object {
-        operator fun invoke(name: String, block: Interface.() -> Unit): TypeSpec {
+    public companion object {
+        public operator fun invoke(name: String, block: Interface.() -> Unit): TypeSpec {
             return Interface(name).build(block)
         }
     }
@@ -93,7 +93,7 @@ class Interface private constructor(name: String): Type() { //generalize over Ty
 
 }
 
-abstract class Type {
+public abstract class Type {
 
     protected abstract var builder: TypeSpec.Builder
 
@@ -101,71 +101,71 @@ abstract class Type {
         builder = builder.method()
     }
 
-    fun property(property: PropertySpec) {
+    public fun property(property: PropertySpec) {
         spec { addProperty(property) }
     }
 
-    fun property(name: String, type: KClass<*>, block: Property.() -> Unit = {}) {
+    public fun property(name: String, type: KClass<*>, block: Property.() -> Unit = {}) {
         property(Property(name, type, block))
     }
 
-    fun property(name: String, type: TypeName, block: Property.() -> Unit = {}) {
+    public fun property(name: String, type: TypeName, block: Property.() -> Unit = {}) {
         property(Property(name, type, block))
     }
 
-    open fun function(function: FunSpec) {
+    public open fun function(function: FunSpec) {
         spec { addFunction(function) }
     }
 
-    fun function(name: String, block: Function.() -> Unit = {}) {
+    public fun function(name: String, block: Function.() -> Unit = {}) {
         function(Function(name, block))
     }
 
-    fun function(name: String, returns: TypeName, block: Function.() -> Unit = {}) {
+    public fun function(name: String, returns: TypeName, block: Function.() -> Unit = {}) {
         function(Function(name, returns, block))
     }
 
-    fun function(name: String, returns: KClass<*>, block: Function.() -> Unit = {}) {
+    public fun function(name: String, returns: KClass<*>, block: Function.() -> Unit = {}) {
         function(Function(name, returns, block))
     }
 
-    fun implements(inter: TypeName) {
+    public fun implements(inter: TypeName) {
         spec { addSuperinterface(inter) }
     }
 
-    fun implements(inter: KClass<*>) {
+    public fun implements(inter: KClass<*>) {
         implements(inter.asTypeName())
     }
 
-    fun implementsBy(inter: TypeName, delegateBlock: Code.() -> Unit) {
+    public fun implementsBy(inter: TypeName, delegateBlock: Code.() -> Unit) {
         spec { addSuperinterface(inter, Code(delegateBlock)) }
     }
 
-    fun implementsBy(inter: KClass<*>, delegateBlock: Code.() -> Unit) {
+    public fun implementsBy(inter: KClass<*>, delegateBlock: Code.() -> Unit) {
         implementsBy(inter.asTypeName(), delegateBlock)
     }
 
 }
 
-class EnumClass(name: String) : Class(name) {
-    override var builder = TypeSpec.enumBuilder(name)
+public class EnumClass(name: String) : Class(name) {
+    override var builder: TypeSpec.Builder = TypeSpec.enumBuilder(name)
 
     private fun build(block: EnumClass.() -> Unit): TypeSpec {
         apply(block)
         return builder.build()
     }
 
-    companion object {
-        operator fun invoke(name: String, block: EnumClass.() -> Unit): TypeSpec {
+    public companion object {
+        public operator fun invoke(name: String, block: EnumClass.() -> Unit): TypeSpec {
             return EnumClass(name).build(block)
         }
     }
 
-    operator fun String.invoke(vararg constructorArguments: Stanza, block: AnonymousClass.() -> Unit = {}) {
+    public operator fun String.invoke(vararg constructorArguments: Stanza, block: AnonymousClass.() -> Unit = {}) {
         enumConstant(this, *constructorArguments) { block() }
     }
 
-    fun enumConstant(name: String, vararg constructorArguments: Stanza, block: AnonymousClass.() -> Unit = {}) {
+    public fun enumConstant(name: String, vararg constructorArguments: Stanza, block: AnonymousClass.() -> Unit = {}) {
         val fullBlock: AnonymousClass.() -> Unit = {
             apply { superConstructor(*constructorArguments) }
             block()
@@ -174,31 +174,31 @@ class EnumClass(name: String) : Class(name) {
     }
 }
 
-class AnonymousClass : Class("<anonymous>") {
-    override var builder = TypeSpec.anonymousClassBuilder()
+public class AnonymousClass : Class("<anonymous>") {
+    override var builder: TypeSpec.Builder = TypeSpec.anonymousClassBuilder()
 
     private fun build(block: AnonymousClass.() -> Unit): TypeSpec {
         apply(block)
         return builder.build()
     }
 
-    companion object {
-        operator fun invoke(block: AnonymousClass.() -> Unit): TypeSpec {
+    public companion object {
+        public operator fun invoke(block: AnonymousClass.() -> Unit): TypeSpec {
             return AnonymousClass().build(block)
         }
     }
 }
 
-class Object private constructor(name: String) : Class(name) {
-    override var builder = TypeSpec.objectBuilder(name)
+public class Object private constructor(name: String) : Class(name) {
+    override var builder: TypeSpec.Builder = TypeSpec.objectBuilder(name)
 
     private fun build(block: Object.() -> Unit): TypeSpec {
         apply(block)
         return builder.build()
     }
 
-    companion object {
-        operator fun invoke(name: String, block: Object.() -> Unit): TypeSpec {
+    public companion object {
+        public operator fun invoke(name: String, block: Object.() -> Unit): TypeSpec {
             return Object(name).build(block)
         }
     }
@@ -216,18 +216,18 @@ public class Annotation private constructor(type: ClassName) {
         return builder.build()
     }
 
-    companion object {
-        operator fun invoke(name: ClassName, block: Annotation.() -> Unit): AnnotationSpec {
+    public companion object {
+        public operator fun invoke(name: ClassName, block: Annotation.() -> Unit): AnnotationSpec {
             return Annotation(name).build(block)
         }
     }
 
-    fun argument(name: String, value: Stanza) {
+    public fun argument(name: String, value: Stanza) {
         //Dangerous if name contains format strings! Add a check?
         spec { addMember("$name = ${value.format}", *value.args) }
     }
 
-    fun argument(value: Stanza) {
+    public fun argument(value: Stanza) {
         spec { addMember(value.format, *value.args) }
     }
 }

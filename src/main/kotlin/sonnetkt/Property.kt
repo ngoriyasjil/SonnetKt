@@ -5,7 +5,7 @@ import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.asTypeName
 import kotlin.reflect.KClass
 
-class Property private constructor(name: String, private val type: TypeName) {
+public class Property private constructor(name: String, private val type: TypeName) {
     private var builder = PropertySpec.builder(name, type)
 
     private fun spec(method: PropertySpec.Builder.() -> PropertySpec.Builder) {
@@ -17,22 +17,23 @@ class Property private constructor(name: String, private val type: TypeName) {
         return builder.build()
     }
 
-    companion object {
-        operator fun invoke(name: String, type: TypeName, block: Property.() -> Unit): PropertySpec {
+    public companion object {
+        public operator fun invoke(name: String, type: TypeName, block: Property.() -> Unit): PropertySpec {
             return Property(name, type).build(block)
         }
 
-        operator fun invoke(name: String, type: KClass<*>, block: Property.() -> Unit) =
-            invoke(name, type.asTypeName(), block)
+        public operator fun invoke(name: String, type: KClass<*>, block: Property.() -> Unit): PropertySpec {
+            return invoke(name, type.asTypeName(), block)
+        }
     }
 
-    var mutable = false
+    public var mutable: Boolean = false
     set(value) {
         spec { mutable(value) }
         field = value
     }
 
-    var visibility = Visibility.PUBLIC
+    public var visibility: Visibility = Visibility.PUBLIC
         set(value) {
             spec {
                 apply { modifiers.removeIf { it in Visibility.modifiers } }
@@ -41,23 +42,23 @@ class Property private constructor(name: String, private val type: TypeName) {
             field = value
         }
 
-    fun initializer(block: Code.() -> Unit) {
+    public fun initializer(block: Code.() -> Unit) {
         spec { initializer(Code(block)) }
     }
 
-    fun initializer(value: Stanza) {
+    public fun initializer(value: Stanza) {
         spec { initializer(value.format, *value.args) }
     }
 
-    fun initializer(value: String) {
+    public fun initializer(value: String) {
         initializer(value.with())
     }
 
-    fun getter(block: Getter.() -> Unit) {
+    public fun getter(block: Getter.() -> Unit) {
         spec { getter(Getter(block)) }
     }
 
-    fun setter(block: Setter.() -> Unit) {
+    public fun setter(block: Setter.() -> Unit) {
         mutable = true
         spec { setter(Setter(type, block)) }
     }

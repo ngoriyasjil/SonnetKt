@@ -33,11 +33,11 @@
                 <groupId>org.jetbrains.kotlin</groupId>
                 <artifactId>kotlin-maven-plugin</artifactId>
                 <version>1.5.0</version>
-                <!-- <configuration>
+                <configuration>
                     <args>
-                        <arg>-Xexplicit-api=strict</arg>
+                        <arg>-Xexplicit-api=warning</arg>
                     </args>
-                </configuration> -->
+                </configuration>
                 <executions>
                     <execution>
                         <id>compile</id>

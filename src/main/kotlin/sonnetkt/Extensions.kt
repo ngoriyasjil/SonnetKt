@@ -1,9 +1,9 @@
 package sonnetkt
 
-class Stanza(val format: String, vararg val args: Any)
+public class Stanza(public val format: String, public vararg val args: Any)
 
-fun String.with(vararg args: Any): Stanza = Stanza(this, *args)
+public fun String.with(vararg args: Any): Stanza = Stanza(this, *args)
 
-fun String.literal() = "%S".with(this)
+public fun String.literal(): Stanza = "%S".with(this)
 
-fun Int.literal() = "%L".with(this)
+public fun Int.literal(): Stanza = "%L".with(this)

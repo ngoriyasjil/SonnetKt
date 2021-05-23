@@ -3,8 +3,8 @@ package sonnetkt
 import com.squareup.kotlinpoet.*
 import kotlin.reflect.KClass
 
-open class Function protected constructor(name: String) {
-    protected open var builder = FunSpec.builder(name)
+public open class Function protected constructor(name: String) {
+    protected open var builder: FunSpec.Builder = FunSpec.builder(name)
 
     private fun spec(method: FunSpec.Builder.() -> FunSpec.Builder) {
         builder = builder.method()
@@ -15,22 +15,22 @@ open class Function protected constructor(name: String) {
         return builder.build()
     }
 
-    companion object {
-        operator fun invoke(name: String, returns: TypeName, block: Function.() -> Unit): FunSpec {
+    public companion object {
+        public operator fun invoke(name: String, returns: TypeName, block: Function.() -> Unit): FunSpec {
             return Function(name)
                 .apply { spec { returns(returns) } }
                 .build(block)
         }
 
-        operator fun invoke(name: String, returns: KClass<*>, block: Function.() -> Unit): FunSpec =
+        public operator fun invoke(name: String, returns: KClass<*>, block: Function.() -> Unit): FunSpec =
             invoke(name, returns.asTypeName(), block)
 
-        operator fun invoke(name: String, block: Function.() -> Unit): FunSpec {
+        public operator fun invoke(name: String, block: Function.() -> Unit): FunSpec {
             return Function(name).build(block)
         }
     }
 
-    var visibility = Visibility.PUBLIC
+    public var visibility: Visibility = Visibility.PUBLIC
         set(value) {
             spec {
                 apply { modifiers.removeIf { it in Visibility.modifiers } }
@@ -39,42 +39,7 @@ open class Function protected constructor(name: String) {
             field = value
         }
 
-    operator fun String.unaryPlus() {
-        spec { addStatement(this@unaryPlus) }
-    }
-
-    operator fun Stanza.unaryPlus() {
-        spec { addStatement(format, *args) }
-    }
-
-    fun parameter(name: String, type: TypeName, block: Parameter.() -> Unit = {}) {
-        spec { addParameter(Parameter(name, type, block)) }
-    }
-
-    fun parameter(name: String, type: KClass<*>, block: Parameter.() -> Unit = {}) {
-        parameter(name, type.asTypeName(), block)
-    }
-
-    fun receiver(type: TypeName) {
-        spec { receiver(type) }
-    }
-
-    fun receiver(type: KClass<*>) {
-        receiver(type.asTypeName())
-    }
-
-    fun controlFlow(headline: Stanza, block: ControlFlowCode.() -> Unit) {
-        spec {
-            addCode(
-                Code { controlFlow(headline, block) }
-            )
-        }
-    }
-
-    fun controlFlow(headline: String, block: Code.() -> Unit) =
-        controlFlow(headline.with(), block)
-
-    var override: Boolean
+    public var override: Boolean
         get() = KModifier.OVERRIDE in builder.modifiers
         set(value) {
             if (value) {
@@ -84,7 +49,7 @@ open class Function protected constructor(name: String) {
             }
         }
 
-    var inline: Boolean
+    public var inline: Boolean
         get() = KModifier.INLINE in builder.modifiers
         set(value) {
             if (value) {
@@ -94,73 +59,109 @@ open class Function protected constructor(name: String) {
             }
         }
 
-    fun annotation(type: ClassName) {
+    public operator fun String.unaryPlus() {
+        spec { addStatement(this@unaryPlus) }
+    }
+
+    public operator fun Stanza.unaryPlus() {
+        spec { addStatement(format, *args) }
+    }
+
+    public fun parameter(name: String, type: TypeName, block: Parameter.() -> Unit = {}) {
+        spec { addParameter(Parameter(name, type, block)) }
+    }
+
+    public fun parameter(name: String, type: KClass<*>, block: Parameter.() -> Unit = {}) {
+        parameter(name, type.asTypeName(), block)
+    }
+
+    public fun receiver(type: TypeName) {
+        spec { receiver(type) }
+    }
+
+    public fun receiver(type: KClass<*>) {
+        receiver(type.asTypeName())
+    }
+
+    public fun controlFlow(headline: Stanza, block: ControlFlowCode.() -> Unit) {
+        spec {
+            addCode(
+                Code { controlFlow(headline, block) }
+            )
+        }
+    }
+
+    public fun controlFlow(headline: String, block: Code.() -> Unit) {
+        controlFlow(headline.with(), block)
+    }
+
+    public fun annotation(type: ClassName) {
         spec { addAnnotation(type) }
     }
 
-    fun annotation(type: KClass<*>) {
+    public fun annotation(type: KClass<*>) {
         annotation(type.asClassName())
     }
 
-    fun annotation(type: ClassName, block: Annotation.() -> Unit) {
+    public fun annotation(type: ClassName, block: Annotation.() -> Unit) {
         spec { addAnnotation(Annotation(type, block)) }
     }
 
 
 }
 
-class Constructor private constructor() : Function("constructor") {
-    override var builder = FunSpec.constructorBuilder()
+public class Constructor private constructor() : Function("constructor") {
+    override var builder: FunSpec.Builder = FunSpec.constructorBuilder()
 
     private fun build(block: Constructor.() -> Unit): FunSpec {
         apply(block)
         return builder.build()
     }
 
-    companion object {
-        operator fun invoke(block: Constructor.() -> Unit): FunSpec {
+    public companion object {
+        public operator fun invoke(block: Constructor.() -> Unit): FunSpec {
             return Constructor().build(block)
         }
     }
 }
 
-class Getter private constructor() : Function("get") {
-    override var builder = FunSpec.getterBuilder()
+public class Getter private constructor() : Function("get") {
+    override var builder: FunSpec.Builder = FunSpec.getterBuilder()
 
     private fun build(block: Getter.() -> Unit): FunSpec {
         apply(block)
         return builder.build()
     }
 
-    companion object {
-        operator fun invoke(block: Getter.() -> Unit): FunSpec {
+    public companion object {
+        public operator fun invoke(block: Getter.() -> Unit): FunSpec {
             return Getter().build(block)
         }
     }
 }
 
-class Setter private constructor(private val propertyType: TypeName) : Function("set") {
-    override var builder = FunSpec.setterBuilder()
+public class Setter private constructor(private val propertyType: TypeName) : Function("set") {
+    override var builder: FunSpec.Builder = FunSpec.setterBuilder()
 
     private fun build(block: Setter.() -> Unit): FunSpec {
         apply(block)
         return builder.build()
     }
 
-    companion object {
-        operator fun invoke(type: TypeName, block: Setter.() -> Unit): FunSpec {
+    public companion object {
+        public operator fun invoke(type: TypeName, block: Setter.() -> Unit): FunSpec {
             return Setter(type).build(block)
         }
     }
 
-    fun parameter(name: String) {
+    public fun parameter(name: String) {
         super.parameter(name, propertyType) {}
     }
 }
 
 
 
-class Parameter private constructor(name: String, type: TypeName) {
+public class Parameter private constructor(name: String, type: TypeName) {
     private var builder = ParameterSpec.builder(name, type)
 
     private fun spec(method: ParameterSpec.Builder.() -> ParameterSpec.Builder) {
@@ -172,13 +173,13 @@ class Parameter private constructor(name: String, type: TypeName) {
         return builder.build()
     }
 
-    companion object {
-        operator fun invoke(name: String, type: TypeName, block: Parameter.() -> Unit): ParameterSpec {
+    public companion object {
+        public operator fun invoke(name: String, type: TypeName, block: Parameter.() -> Unit): ParameterSpec {
             return Parameter(name, type).build(block)
         }
     }
 
-    var vararg: Boolean = false
+    public var vararg: Boolean = false
         get() = KModifier.VARARG in builder.modifiers
         set(value) {
             if (value) {
@@ -189,15 +190,15 @@ class Parameter private constructor(name: String, type: TypeName) {
             field = value
         }
 
-    fun defaultValue(block: Code.() -> Unit) {
+    public fun defaultValue(block: Code.() -> Unit) {
         spec { defaultValue(Code(block)) }
     }
 
-    fun defaultValue(value: Stanza) {
+    public fun defaultValue(value: Stanza) {
         spec { defaultValue(value.format, *value.args) }
     }
 
-    fun defaultValue(value: String) {
+    public fun defaultValue(value: String) {
         defaultValue(value.with())
     }
 }

@@ -4,24 +4,24 @@ import com.squareup.kotlinpoet.*
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import kotlin.reflect.KClass
 
-fun className(vararg names: String): ClassName = ClassName("", *names)
+public fun className(vararg names: String): ClassName = ClassName("", *names)
 
-fun ClassName.fromPackage(packageName: String): ClassName = ClassName(packageName, simpleNames)
+public fun ClassName.fromPackage(packageName: String): ClassName = ClassName(packageName, simpleNames)
 
-fun MemberName.fromPackage(packageName: String): MemberName = MemberName(packageName, simpleName)
+public fun MemberName.fromPackage(packageName: String): MemberName = MemberName(packageName, simpleName)
 
-fun ClassName.member(name: String): MemberName = MemberName(this, name)
+public fun ClassName.member(name: String): MemberName = MemberName(this, name)
 
-fun memberName(name: String): MemberName = MemberName("", name)
+public fun memberName(name: String): MemberName = MemberName("", name)
 
-val TypeName.nullable: TypeName
+public val TypeName.nullable: TypeName
     get() = copy(nullable = true)
 
-val KClass<*>.nullable: TypeName
+public val KClass<*>.nullable: TypeName
     get() = asTypeName().nullable
 
-fun TypeName.outVariance() = WildcardTypeName.producerOf(this)
+public fun TypeName.outVariance(): WildcardTypeName = WildcardTypeName.producerOf(this)
 
-fun TypeName.inVariance() = WildcardTypeName.consumerOf(this)
+public fun TypeName.inVariance(): WildcardTypeName = WildcardTypeName.consumerOf(this)
 
-operator fun ClassName.get(vararg parameters: TypeName) = parameterizedBy(*parameters)
+public operator fun ClassName.get(vararg parameters: TypeName): ParameterizedTypeName = parameterizedBy(*parameters)
